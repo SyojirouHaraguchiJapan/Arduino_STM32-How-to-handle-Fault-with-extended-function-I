@@ -98,7 +98,7 @@ NVIC_CCR:      .word 0xE000ED14    @ NVIC configuration control register
 SYSTICK_CSR:   .word 0xE000E010    @ Systick control register
 ```
 There is no use and no destroy about r0 in this function.\
-This function set some registers and branch `__error` which included in `util.c`
+This function set some registers and branch `__error` which included in `"util.c"`
 ```
 /* (Called from exc.S with global interrupts disabled.) */
 __attribute__((noreturn)) void __error(void) {
@@ -155,7 +155,7 @@ __attribute__((noreturn)) void throb(void) {
 }
 ```
 This is original source code and shows execute while(1) loop endless.\
-if defined HAVE_ERROR_LED then brink at fade mode whwn Fault occur.
+if defined HAVE_ERROR_LED then brink at fade mode when Fault occur.
 ## 3. Extention for Fault code number display
 For easy customizing, we try to display Fault code as counted blink.
 ```
