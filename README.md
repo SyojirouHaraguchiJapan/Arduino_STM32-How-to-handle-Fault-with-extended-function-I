@@ -15,7 +15,7 @@ In reality, these decision already supported in ”exc.S” as vector table.
 `C:\Program Files (x86)\Arduino188\hardware\Arduino_STM32\STM32F1\cores\maple\libmaple\exc.S`
 
 ```
-:
+  :
 # On an exception, push a fake stack thread mode stack frame and redirect
 # thread execution to a thread mode error handler
 
@@ -68,3 +68,5 @@ __exc_usagefault:
     b __default_exc
   :
 ```
+The source shows when fault occured, CPU set each fault number to r0 and branch __default_exc.\
+So, we need only think the way display or output to suitable device.
