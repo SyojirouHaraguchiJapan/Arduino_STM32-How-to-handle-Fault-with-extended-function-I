@@ -156,3 +156,93 @@ __attribute__((noreturn)) void throb(void) {
 ```
 This is original source code and shows execute while(1) loop endless.\
 if defined HAVE_ERROR_LED then brink at fade mode whwn Fault occur.
+## 3. Extention for Fault code number display
+For easy customizing, we try to display Fault code as counted blink as below.
+```
+#define USE_COUNTED_BLINK
+#define DELAY_COUNT 12000
+/*
+ * Re-define ERROR_LED and ERROR_LED_PIN to PC13_LED for fit to BluePill
+ */
+#if defined(ERROR_LED_PORT) && defined(ERROR_LED_PIN)
+#undef  ERROR_LED_PORT
+#undef  ERROR_LED_PIN
+#endif
+
+#define ERROR_LED_PORT   GPIOC
+#define ERROR_LED_PIN    13
+  :
+/* This was public as of v0.0.12, so we've got to keep it public. */
+/**
+ * @brief Fades the error LED on and off
+ * @sideeffect Sets output push-pull on ERROR_LED_PIN.
+ */
+__attribute__((noreturn)) void throb(void) {
+
+#ifdef HAVE_ERROR_LED
+    int32  slope   = 1;
+    uint32 CC      = 0x0000;
+    uint32 TOP_CNT = 0x0200;
+    uint32 i       = 0;
+
+  #ifdef USE_COUNTED_BLINK
+    uint32 j;
+    uint32 cause;
+    asm volatile (
+        "mov %0, r0"   // assembly instruction: move r0 value to opernd 0 (%0)
+        : "=r" (cause) // output operand: C variable cause
+        :              // input  operand: none
+        : "r0"         // may destroy register
+    );
+  #endif
+
+    gpio_set_mode(ERROR_LED_PORT, ERROR_LED_PIN, GPIO_MODE_OUTPUT);
+
+  #ifdef USE_COUNTED_BLINK
+    /* Error blink */
+    cause &= 0x07;     // limit max 7
+    if (cause > 5 || cause < 1) {
+        cause = 6;
+    }
+    while(1) {
+        for(j=0; j<cause; j++) {
+            gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 0);   // LED ON
+            i=DELAY_COUNT; while (i>0) {int k = sqrt(i); i--; }
+            gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 1);   // LED OFF
+            i=DELAY_COUNT; while (i>0) {int k = sqrt(i); i--; }
+        }
+        for (j=cause; j<7; j++) {
+            gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 1);   // LED OFF
+            i=DELAY_COUNT; while (i>0) {int k = sqrt(i); i--; }
+            i=DELAY_COUNT; while (i>0) {int k = sqrt(i); i--; }
+        }
+    }
+  #else	
+    /* Error fade. */
+    while (1) {
+        if (CC == TOP_CNT)  {
+            slope = -1;
+        } else if (CC == 0) {
+            slope = 1;
+        }
+
+        if (i == TOP_CNT)  {
+            CC += slope;
+            i = 0;
+        }
+
+        if (i < CC) {
+            gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 1);
+        } else {
+            gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 0);
+        }
+        i++;
+    }
+  #endif
+#else
+    /* No error LED is defined; do nothing. */
+	while (1)
+        ;
+#endif
+}
+```
