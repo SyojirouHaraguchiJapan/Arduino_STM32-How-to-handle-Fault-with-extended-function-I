@@ -2,7 +2,7 @@
 ## 1. About default function of Arduino_STM32 Fault
 It support only detect and display as LED fade blink the Fault occur or not .\
 It is to less and not enough.
-## 2. Next step
+## 2. Preliminary knowledge
 So, we want to add the way to know what type fault occur as below.
 - nmi
 - hardfault
