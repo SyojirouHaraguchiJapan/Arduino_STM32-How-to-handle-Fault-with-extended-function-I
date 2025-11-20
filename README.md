@@ -157,7 +157,7 @@ __attribute__((noreturn)) void throb(void) {
 This is original source code and shows execute while(1) loop endless.\
 if defined HAVE_ERROR_LED then brink at fade mode whwn Fault occur.
 ## 3. Extention for Fault code number display
-For easy customizing, we try to display Fault code as counted blink as below.
+For easy customizing, we try to display Fault code as counted blink.
 ```
 #define USE_COUNTED_BLINK
 #define DELAY_COUNT 12000
