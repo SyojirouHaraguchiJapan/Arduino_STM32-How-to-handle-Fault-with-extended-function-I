@@ -14,8 +14,7 @@ In reality, these decision already supported in ”exc.S” as vector table.
 
 `C:\Program Files (x86)\Arduino188\hardware\Arduino_STM32\STM32F1\cores\maple\libmaple\exc.S`
 
-```
-  :
+```  :
 # On an exception, push a fake stack thread mode stack frame and redirect
 # thread execution to a thread mode error handler
 
@@ -66,5 +65,4 @@ __exc_busfault:
 __exc_usagefault:
     mov r0, #5
     b __default_exc
-  :
-```
+  :```
