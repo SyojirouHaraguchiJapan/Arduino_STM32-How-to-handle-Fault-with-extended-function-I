@@ -69,4 +69,33 @@ __exc_usagefault:
   :
 ```
 The source shows when fault occured, CPU set each fault number to r0 and branch __default_exc.\
-So, we need only think the way of display or output to suitable device.
+So, we need only think the way of display or output to suitable device.\
+The part of `__default_exc` is as below.
+```
+.thumb_func
+__default_exc:
+    ldr r2, NVIC_CCR            @ Enable returning to thread mode even if there are
+    mov r1 ,#1                  @ pending exceptions. See flag NONEBASETHRDENA.
+    str r1, [r2]
+    cpsid i                     @ Disable global interrupts
+    ldr r2, SYSTICK_CSR         @ Disable systick handler
+    mov r1, #0
+    str r1, [r2]
+    ldr r1, CPSR_MASK           @ Set default CPSR
+    push {r1}
+    ldr r1, TARGET_PC           @ Set target pc
+    push {r1}
+    sub sp, sp, #24             @ Don't care
+    ldr r1, EXC_RETURN          @ Return to thread mode
+    mov lr, r1
+    bx lr                       @ Exception exit
+
+.align 4
+CPSR_MASK:     .word 0x61000000
+EXC_RETURN:    .word 0xFFFFFFF9
+TARGET_PC:     .word __error
+NVIC_CCR:      .word 0xE000ED14    @ NVIC configuration control register
+SYSTICK_CSR:   .word 0xE000E010    @ Systick control register
+```
+There is no use and no destroy about r0 in this function.
+
