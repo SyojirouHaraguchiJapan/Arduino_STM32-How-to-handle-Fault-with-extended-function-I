@@ -97,5 +97,19 @@ TARGET_PC:     .word __error
 NVIC_CCR:      .word 0xE000ED14    @ NVIC configuration control register
 SYSTICK_CSR:   .word 0xE000E010    @ Systick control register
 ```
-There is no use and no destroy about r0 in this function.
-
+There is no use and no destroy about r0 in this function.\
+This function set some registers and branch `__error` which included in `util.c`
+```
+/* (Called from exc.S with global interrupts disabled.) */
+__attribute__((noreturn)) void __error(void) {
+    if (__lm_error) {
+        __lm_error();
+    }
+    /* Reenable global interrupts */
+    nvic_globalirq_enable();
+    throb();
+}
+```
+The `__lm_error` is not defined. Then skip.\
+`nvic_globalirq_enable()` is macro define and equal `asm volatile("cpsie 1");`.\
+Then, call `throb()` which is main processing routine.
