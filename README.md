@@ -69,4 +69,4 @@ __exc_usagefault:
   :
 ```
 The source shows when fault occured, CPU set each fault number to r0 and branch __default_exc.\
-So, we need only think the way display or output to suitable device.
+So, we need only think the way of display or output to suitable device.
