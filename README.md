@@ -111,5 +111,5 @@ __attribute__((noreturn)) void __error(void) {
 }
 ```
 The `__lm_error` is not defined. Then skip.\
-`nvic_globalirq_enable()` is macro define and equal `asm volatile("cpsie 1");`.\
+`nvic_globalirq_enable()` is macro define and equal to `asm volatile("cpsie 1");`.\
 Then, call `throb()` which is main processing routine.
