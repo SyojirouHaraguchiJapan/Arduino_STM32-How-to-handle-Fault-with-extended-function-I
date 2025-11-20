@@ -1,4 +1,4 @@
-# -Arduino_STM32-How-to-handle-Fault-with-extended-function-I
+# Arduino_STM32-How-to-handle-Fault-with-extended-function-I
 ## 1. About default function of Arduino_STM32 Fault
 It support only detect and display the Fault occur or not.\
 It is to less and not enough.\
